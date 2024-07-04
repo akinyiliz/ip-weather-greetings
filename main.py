@@ -1,8 +1,7 @@
 import os
 import requests
-import geocoder
 from dotenv import load_dotenv
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, Header, HTTPException
 
 # Load environment variables from .env file
 load_dotenv()
@@ -10,22 +9,24 @@ load_dotenv()
 # Initialize FastAPI app
 app = FastAPI()
 
-# Fetch the OpenWeatherMap API key from environment variables
+# Fetch the OpenWeatherMap API key and IPInfo token from environment variables
 WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
+IP_INFO_TOKEN = os.getenv("IP_INFO_TOKEN")
 
 
 @app.get("/api/hello")
-async def get_visitor(visitor_name: str, request: Request):
+async def get_visitor(visitor_name: str,  request: Request):
     """
     Endpoint to greet a visitor with their name and weather information based on their IP location.
     """
 
-    # Retrieve visitor's IP address
-    visitor_ip = request.client.host
-    g = geocoder.ip('me')
+    # Retrieve visitor's IP address and location info
+    response = requests.get(f"https://ipinfo.io/json?token={IP_INFO_TOKEN}")
+    data = response.json()
 
-    # Use geocoder to get latitude and longitude based on visitor's IP
-    location = g.latlng
+    visitor_ip = data["ip"]
+    location = data["loc"].split(",")
+
     lat = location[0]
     lon = location[1]
 
