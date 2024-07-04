@@ -7,6 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ImproperlyConfigured
 
+
 load_dotenv()
 
 
@@ -15,7 +16,7 @@ class HelloView(View):
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
 
         if x_forwarded_for:
-            ip = x_forwarded_for.split(',')[0]
+            ip = x_forwarded_for.split(',')[-1].strip()
         else:
             ip = request.META.get('REMOTE_ADDR')
 
