@@ -13,10 +13,12 @@ load_dotenv()
 class HelloView(View):
     def get_client_ip(self, request):
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+
         if x_forwarded_for:
             ip = x_forwarded_for.split(',')[0]
         else:
             ip = request.META.get('REMOTE_ADDR')
+
         return ip
 
     def get(self, request):
@@ -35,19 +37,17 @@ class HelloView(View):
             f"https://ipinfo.io/json?token={ip_info_token}")
         data = response.json()
 
-        location = data["loc"].split(",")
-        lat, lon = location[0], location[1]
+        city = data["city"]
 
         try:
             # Fetch weather information from OpenWeatherMap based on latitude and longitude
-            weather_response = requests.get(
-                f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&appid={weather_api_key}"
-            )
+            api_url = "https://api.weatherapi.com/v1/current.json?key="+weather_api_key+"&q="+city
+            weather_response = requests.get(api_url)
             weather_response.raise_for_status()
+
             weather_data = weather_response.json()
 
-            city = weather_data["name"]
-            temp = int(weather_data["main"]["feels_like"])
+            temp = weather_data['current']['temp_c']
 
             # Return response with visitor's IP, location, and greeting message
             return JsonResponse({
