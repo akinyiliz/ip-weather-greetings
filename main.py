@@ -35,8 +35,8 @@ async def get_visitor(visitor_name: str,  request: Request):
         city = data["city"]
 
         # Fetch weather information from WeatherAPI based on city
-        response = requests.get(
-            f"https://api.weatherapi.com/v1/current.json?key={WEATHER_API_KEY}&q={city}")
+        api_url = "https://api.weatherapi.com/v1/current.json?key="+WEATHER_API_KEY+"&q="+city
+        response = requests.get(api_url)
         if response.status_code == 200:
             data = response.json()
             temperature = data['current']['temp_c']
