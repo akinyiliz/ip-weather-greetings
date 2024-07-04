@@ -20,17 +20,18 @@ async def get_visitor(visitor_name: str,  request: Request):
     Endpoint to greet a visitor with their name and weather information based on their IP location.
     """
 
-    # Retrieve visitor's IP address and location info
-    response = requests.get(f"https://ipinfo.io/json?token={IP_INFO_TOKEN}")
-    data = response.json()
-
-    visitor_ip = data["ip"]
-    location = data["loc"].split(",")
-
-    lat = location[0]
-    lon = location[1]
-
     try:
+        # Retrieve visitor's IP address and location info
+        response = requests.get(
+            f"https://ipinfo.io/json?token={IP_INFO_TOKEN}")
+        data = response.json()
+
+        visitor_ip = data["ip"]
+        location = data["loc"].split(",")
+
+        lat = location[0]
+        lon = location[1]
+
         # Fetch weather information from OpenWeatherMap based on latitude and longitude
         weather_response = requests.get(
             f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&appid={WEATHER_API_KEY}")
