@@ -33,7 +33,7 @@ class HelloView(View):
         visitor_ip = self.get_client_ip(request)
 
         response = requests.get(
-            f"https://ipinfo.io/{visitor_ip}json?token={ip_info_token}")
+            f"https://ipinfo.io/{visitor_ip}/json?token={ip_info_token}")
         data = response.json()
         print(data)
 
